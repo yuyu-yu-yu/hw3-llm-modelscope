@@ -2,6 +2,8 @@
 
 本仓库用于提交人工智能选修课第三次作业，主题为在 ModelScope DSW 环境中部署并测试大语言模型。实验主要比较 Qwen2.5 系列不同参数规模模型在中文语义理解、歧义句判断和多义词解释任务上的表现，并记录 ChatGLM3-6B、Baichuan2-7B-Chat 在当前依赖环境下遇到的兼容性问题。
 
+公开仓库链接：<https://github.com/yuyu-yu-yu/hw3-llm-modelscope>
+
 ## 实验概况
 
 - 平台：ModelScope DSW
