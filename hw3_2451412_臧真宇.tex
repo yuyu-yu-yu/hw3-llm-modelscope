@@ -1,0 +1,464 @@
+\documentclass[UTF8,a4paper,fontset=none,zihao=-4]{ctexart}
+
+\usepackage{geometry}
+\usepackage{fontspec}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{caption}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{etoolbox}
+\usepackage{lastpage}
+\usepackage{setspace}
+\usepackage{hyperref}
+\usepackage{xurl}
+\usepackage{tocloft}
+\usepackage{longtable}
+\usepackage{enumitem}
+\usepackage{needspace}
+\usetikzlibrary{calc}
+
+\geometry{
+  a4paper,
+  left=2.8cm,
+  right=2.3cm,
+  top=2.5cm,
+  bottom=2.6cm,
+  headheight=27pt,
+  headsep=18pt,
+  footskip=24pt
+}
+
+\hypersetup{
+  colorlinks=false,
+  pdfborder={0 0 0}
+}
+
+\defaultfontfeatures{Ligatures=TeX}
+\IfFontExistsTF{Times New Roman}
+  {\setmainfont{Times New Roman}}
+  {\setmainfont{TeX Gyre Termes}}
+\IfFontExistsTF{SimSun}
+  {\setCJKmainfont{SimSun}}
+  {\setCJKmainfont{FandolSong-Regular}}
+\IfFontExistsTF{SimHei}
+  {\setCJKsansfont{SimHei}}
+  {\setCJKsansfont{FandolHei-Regular}}
+\IfFontExistsTF{KaiTi}
+  {\setCJKmonofont{KaiTi}}
+  {\setCJKmonofont{FandolKai-Regular}}
+
+\newCJKfontfamily\tjhei{SimHei}
+\newCJKfontfamily\tjheibf[AutoFakeBold=2.0]{SimHei}
+\newCJKfontfamily\tjsong{SimSun}
+\newfontfamily\tjtimes{Times New Roman}
+
+\setlength{\parindent}{2\ccwd}
+\setlength{\parskip}{0pt}
+\setstretch{1}
+\raggedbottom
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{1}
+
+\newcommand{\TJBodyFont}{\fontsize{10.5bp}{18bp}\selectfont}
+\newcommand{\TJSmallFive}{\fontsize{9bp}{15bp}\selectfont}
+\newcommand{\TJFour}{\fontsize{14bp}{18bp}\selectfont}
+\newcommand{\TJBigTitle}{\fontsize{18bp}{24bp}\selectfont}
+\newcommand{\TJCoverCn}{\fontsize{26bp}{30bp}\selectfont}
+\newcommand{\TJCoverEn}{\fontsize{18bp}{20bp}\selectfont}
+\newcommand{\TJCoverMeta}{\fontsize{14bp}{28bp}\selectfont}
+
+\newcommand{\TJTitleCN}{大语言模型部署体验实验报告}
+\newcommand{\TJSubtitleCN}{基于 ModelScope DSW 的 Qwen2.5 系列问答测试与横向比较}
+\newcommand{\TJCoverType}{实验报告}
+\newcommand{\TJHeaderRight}{人工智能导论}
+\newcommand{\TJStudentID}{2451412}
+\newcommand{\TJStudentName}{臧真宇}
+\newcommand{\TJMajor}{软件工程}
+\newcommand{\TJCollege}{计算机科学与技术学院}
+\newcommand{\TJAdvisor}{无}
+\newcommand{\TJDate}{2026 年 5 月}
+
+\newcommand{\TJHeaderWordmark}{%
+  \IfFileExists{tongji_header_wordmark.png}
+    {\raisebox{-0.12cm}{\includegraphics[height=0.86cm]{tongji_header_wordmark.png}}}
+    {{\tjhei\fontsize{15bp}{15bp}\selectfont 同济大学}}%
+}
+
+\newcommand{\TJCoverWordmark}{%
+  \IfFileExists{tongji_cover_wordmark.png}
+    {\includegraphics[width=8.8cm]{tongji_cover_wordmark.png}}
+    {{\tjhei\fontsize{30bp}{32bp}\selectfont 同济大学}}%
+}
+
+\newif\ifTJBindingLine
+\TJBindingLinetrue
+
+\AddToHook{shipout/background}{%
+  \ifTJBindingLine
+    \begin{tikzpicture}[remember picture, overlay]
+      \draw[dashed, line width=0.4pt]
+        ($(current page.north west)+(1.1cm,-3.1cm)$) --
+        ($(current page.south west)+(1.1cm,2.2cm)$);
+      \node[align=center, font=\TJBodyFont]
+        at ($(current page.west)+(0.55cm,0)$)
+        {装\\[1.2cm]订\\[1.2cm]线};
+    \end{tikzpicture}%
+  \fi
+}
+
+\fancypagestyle{tjfront}{
+  \fancyhf{}
+  \fancyhead[L]{\TJHeaderWordmark}
+  \fancyhead[R]{{\tjsong\fontsize{10.5bp}{18bp}\selectfont \TJHeaderRight}}
+  \renewcommand{\headrulewidth}{0.6pt}
+  \fancyfoot[C]{{\tjsong\fontsize{10.5bp}{18bp}\selectfont \thepage}}
+}
+
+\fancypagestyle{tjmain}{
+  \fancyhf{}
+  \fancyhead[L]{\TJHeaderWordmark}
+  \fancyhead[R]{{\tjsong\fontsize{10.5bp}{18bp}\selectfont \TJHeaderRight}}
+  \renewcommand{\headrulewidth}{0.6pt}
+  \fancyfoot[C]{{\tjsong\fontsize{10.5bp}{18bp}\selectfont 共 \pageref*{LastPage} 页，第 \thepage 页}}
+}
+
+\fancypagestyle{plain}{
+  \fancyhf{}
+  \fancyhead[L]{\TJHeaderWordmark}
+  \fancyhead[R]{{\tjsong\fontsize{10.5bp}{18bp}\selectfont \TJHeaderRight}}
+  \renewcommand{\headrulewidth}{0.6pt}
+  \fancyfoot[C]{{\tjsong\fontsize{10.5bp}{18bp}\selectfont \thepage}}
+}
+
+\titleformat{\section}[block]
+  {\centering\tjheibf\TJFour}
+  {\thesection}
+  {1em}
+  {}
+\titlespacing*{\section}{0pt}{0.6\baselineskip}{0.5\baselineskip}
+
+\titleformat{\subsection}[hang]
+  {\tjheibf\TJBodyFont}
+  {\thesubsection}
+  {1em}
+  {}
+\titlespacing*{\subsection}{0pt}{0.5\baselineskip}{0.4\baselineskip}
+
+\DeclareCaptionFont{tjcaption}{\TJSmallFive}
+\captionsetup{
+  font={tjcaption},
+  labelsep=space,
+  justification=centering,
+  singlelinecheck=false
+}
+\captionsetup[table]{position=top,skip=6pt}
+\captionsetup[figure]{position=bottom,skip=6pt}
+
+\renewcommand{\contentsname}{目\hspace{1em}录}
+\renewcommand{\cfttoctitlefont}{\hfill\tjheibf\TJFour}
+\renewcommand{\cftaftertoctitle}{\hfill}
+\renewcommand{\cftsecfont}{\tjsong\fontsize{10.5bp}{15bp}\selectfont}
+\renewcommand{\cftsecpagefont}{\tjsong\fontsize{10.5bp}{15bp}\selectfont}
+\renewcommand{\cftdotsep}{1}
+\setlength{\cftbeforetoctitleskip}{0pt}
+\setlength{\cftaftertoctitleskip}{12pt}
+\setlength{\cftbeforesecskip}{4pt}
+
+\newcommand{\TJCoverItem}[2]{%
+  \noindent
+  \begin{tabular*}{\textwidth}{@{}p{4.2cm}@{\extracolsep{\fill}}p{9.8cm}@{}}
+    {\tjhei\TJCoverMeta #1} &
+    {\centering\arraybackslash \underline{\makebox[9.4cm][c]{\TJCoverMeta #2}}}
+  \end{tabular*}\par\vspace{0.58cm}
+}
+
+\newcommand{\ShotPlaceholder}[2]{%
+  \Needspace{7.2cm}
+  \begin{figure}[htbp]
+    \centering
+    \fbox{%
+      \begin{minipage}[c][5.2cm][c]{0.86\textwidth}
+        \centering
+        {\tjheibf #1}\par\vspace{0.5cm}
+        {\tjsong #2}\par\vspace{0.35cm}
+        {\color{gray}截图占位：后续可替换为 ModelScope 或终端真实截图}
+      \end{minipage}
+    }
+    \caption{#1}
+  \end{figure}
+}
+
+\newcommand{\RealShot}[3]{%
+  \Needspace{7.2cm}
+  \begin{figure}[htbp]
+    \centering
+    \IfFileExists{#2}
+      {\includegraphics[width=0.86\textwidth]{#2}}
+      {\fbox{\begin{minipage}[c][5.2cm][c]{0.86\textwidth}\centering #1\par #3\end{minipage}}}
+    \caption{#1}
+  \end{figure}
+}
+
+\newcommand{\ModelName}[1]{\texttt{#1}}
+\setlist[itemize]{leftmargin=2\ccwd,itemsep=0pt,topsep=2pt}
+\setlist[enumerate]{leftmargin=2.5\ccwd,itemsep=0pt,topsep=2pt}
+
+\AtBeginDocument{\TJBodyFont}
+
+\begin{document}
+
+{\TJBindingLinefalse
+\begin{titlepage}
+  \thispagestyle{empty}
+  \centering
+  \vspace*{2.0cm}
+
+  \TJCoverWordmark\par
+  \vspace{0.35cm}
+  {{\tjtimes\bfseries\TJCoverEn TONGJI UNIVERSITY}\par}
+  \vspace{1.6cm}
+  {{\tjheibf\TJCoverCn \TJCoverType}\par}
+
+  \vfill
+
+  \raggedright
+  \TJCoverItem{课题名称}{\TJTitleCN}
+  \TJCoverItem{副\hspace{1.9em}标\hspace{1.9em}题}{\TJSubtitleCN}
+  \TJCoverItem{学\hspace{1.9em}院}{\TJCollege}
+  \TJCoverItem{专\hspace{1.9em}业}{\TJMajor}
+  \TJCoverItem{学生姓名}{\TJStudentName}
+  \TJCoverItem{学\hspace{1.9em}号}{\TJStudentID}
+  \TJCoverItem{指导教师}{\TJAdvisor}
+
+  \vfill
+  \centering
+  {{\tjsong\TJCoverMeta \TJDate}\par}
+\end{titlepage}
+}
+
+\clearpage
+\pagenumbering{Roman}
+\pagestyle{tjfront}
+\tableofcontents
+
+\clearpage
+\pagenumbering{arabic}
+\pagestyle{tjmain}
+
+\section{实验目的与作业要求}
+
+本次作业要求在魔搭 ModelScope 平台上部署并测试大语言模型，提交公开可访问的项目链接，并完成实验报告。报告需要覆盖三个评分点：部署或 git clone 相关截图、问答测试结果截图，以及不同大语言模型之间的横向对比分析。
+
+根据补充材料，推荐模型包括通义千问 Qwen、智谱 ChatGLM3、百川 Baichuan2 等。本次实验在实际部署中优先选择 ModelScope 上可稳定运行的中文指令模型，主实验采用 Qwen2.5 系列的不同参数规模模型，并补充记录 ChatGLM3-6B 与 Baichuan2-7B-Chat 在当前环境下遇到的兼容性问题。该安排既满足“2--3 个不同模型”的测试要求，也能比较参数规模、运行环境和回答质量之间的关系。
+
+\section{实验环境}
+
+实验主要在 ModelScope DSW 中完成。前期使用免费 CPU 实例验证环境和脚本，后续切换到 GPU 实例完成 7B 模型测试。表 \ref{tab:env} 给出本次实验中记录到的主要环境信息。
+
+\begin{table}[htbp]
+  \centering
+  \caption{实验环境配置}
+  \label{tab:env}
+  \begin{tabular}{p{3.1cm}p{9.1cm}}
+    \toprule
+    项目 & 配置 \\
+    \midrule
+    平台 & ModelScope DSW \\
+    CPU 实例 & DSW-CPU，Python 3.11.11，PyTorch 2.3.1+cpu，transformers 4.55.4，modelscope 1.37.1 \\
+    GPU 实例 & DSW-GPU，NVIDIA A10，显存约 23GB \\
+    工作目录 & \ModelName{/mnt/workspace/hw3\_llm\_compare} 与 \ModelName{/mnt/workspace/hw3\_big\_models} \\
+    主要依赖 & PyTorch、transformers、modelscope、accelerate 等 \\
+    测试任务 & 中文歧义句、指代关系和多义词理解问答 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\RealShot{ModelScope DSW GPU 实例运行截图}{report_screenshots/01_modelscope_gpu_instance.png}{展示 ModelScope 我的 Notebook 页面中 GPU 环境已启动，作为本次 7B 模型实验的运行环境记录。}
+
+\section{模型部署过程}
+
+实验通过 ModelScope 的 \ModelName{snapshot\_download} 或模型仓库下载接口将模型文件保存到工作目录下的 \ModelName{models} 子目录，再使用 transformers 加载 tokenizer 和 causal language model。CPU 实例先用于小模型验证，GPU 实例用于 7B 模型推理。
+
+本次成功完成问答测试的模型如表 \ref{tab:models} 所示。为满足作业中的横向比较要求，实验选择了同一模型家族的三个参数规模。这样可以减少模型架构差异带来的干扰，更清楚地观察参数规模和硬件环境对中文理解效果的影响。
+
+\begin{table}[htbp]
+  \centering
+  \caption{成功完成测试的模型}
+  \label{tab:models}
+  \begin{tabular}{p{3.7cm}p{2.1cm}p{2.8cm}p{3.1cm}}
+    \toprule
+    模型 & 参数规模 & 运行环境 & 测试完成情况 \\
+    \midrule
+    Qwen2.5-0.5B-Instruct & 0.5B & DSW-CPU & 5 题完成 \\
+    Qwen2.5-1.5B-Instruct & 1.5B & DSW-CPU/GPU & 2 题短测完成 \\
+    Qwen2.5-7B-Instruct & 7B & DSW-GPU & 5 题完成 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\RealShot{Qwen2.5-7B 模型下载与权重加载截图}{report_screenshots/02_qwen7b_download_loading.png}{终端输出显示 Qwen2.5-7B-Instruct 权重文件下载完成，并完成模型权重加载。}
+
+\section{问答测试设计}
+
+问答题主要来自作业补充材料，覆盖中文语义歧义、反讽表达、嵌套指代和多义词解释。五个测试问题如下：
+
+\begin{enumerate}
+  \item 请说出以下两句话区别在哪里？1、冬天：能穿多少穿多少 2、夏天：能穿多少穿多少
+  \item 请说出以下两句话区别在哪里？单身狗产生的原因有两个，一是谁都看不上，二是谁都看不上
+  \item 他知道我知道你知道他不知道吗？这句话里，到底谁不知道？
+  \item 明明明明明白白白喜欢他，可她就是不说。这句话里，明明和白白谁喜欢谁？
+  \item 领导：你这是什么意思？小明：没什么意思。意思意思。领导：你这就不够意思了。小明：小意思，小意思。领导：你这人真有意思。小明：其实也没有别的意思。领导：那我就不好意思了。小明：是我不好意思。请问：以上“意思”分别是什么意思。
+\end{enumerate}
+
+评价时主要关注三个维度：回答是否抓住语义差别，是否能处理中文上下文中的指代与省略，以及回答是否完整、清楚。由于本次实验不是训练模型，而是部署和推理体验，运行耗时也作为部署体验的一部分记录。
+
+\section{模型问答结果}
+
+\subsection{Qwen2.5-0.5B-Instruct}
+
+0.5B 模型在 CPU 实例上完成了五个问题的推理。该模型参数量较小，部署和下载成本较低，但在 CPU 上推理速度很慢，并且复杂语义题的回答准确性不足。表 \ref{tab:qwen05} 汇总了主要结果。
+
+\begin{longtable}{p{0.9cm}p{5.2cm}p{5.2cm}p{1.8cm}}
+  \caption{Qwen2.5-0.5B-Instruct 问答结果} \label{tab:qwen05}\\
+  \toprule
+  题号 & 问题摘要 & 模型回答摘要 & 耗时 \\
+  \midrule
+  \endfirsthead
+  \toprule
+  题号 & 问题摘要 & 模型回答摘要 & 耗时 \\
+  \midrule
+  \endhead
+  1 & 冬天与夏天“能穿多少穿多少”的区别 & 冬天不能穿太多衣服，夏天可以穿很多衣服 & 212.18 秒 \\
+  2 & “谁都看不上”的双重含义 & 认为第一句是没人喜欢，第二句是多个原因 & 629.80 秒 \\
+  3 & 嵌套“知道/不知道”中谁不知道 & 他 & 63.49 秒 \\
+  4 & 明明和白白谁喜欢谁 & 明明喜欢白白 & 109.20 秒 \\
+  5 & 多个“意思”的语义解释 & 小明的意思是“我感觉不对劲” & 207.72 秒 \\
+  \bottomrule
+\end{longtable}
+
+从结果看，0.5B 模型能够给出形式完整的回答，但容易忽略中文幽默和歧义的真正关键。例如第一题的正确理解应是冬天“尽量多穿”、夏天“尽量少穿”，但模型回答成“冬天不能穿太多衣服”。第五题也没有逐项解释“意思”的不同含义。
+
+\RealShot{Qwen2.5-0.5B-Instruct 问答测试截图}{report_screenshots/06_qwen05_results.png}{展示 \ModelName{partial\_results.md} 中 0.5B 模型在 CPU 实例上的问答结果与耗时记录。}
+
+\subsection{Qwen2.5-1.5B-Instruct}
+
+1.5B 模型完成了两道短问答。与 0.5B 相比，该模型在短输入上响应明显更快，回答更简洁，但由于本次只保留了两道问题结果，主要作为中间规模的补充材料。
+
+\begin{table}[htbp]
+  \centering
+  \caption{Qwen2.5-1.5B-Instruct 短问答结果}
+  \label{tab:qwen15}
+  \begin{tabular}{p{0.9cm}p{5.7cm}p{4.3cm}p{1.5cm}}
+    \toprule
+    题号 & 问题摘要 & 模型回答 & 耗时 \\
+    \midrule
+    1 & 冬天与夏天“能穿多少穿多少”的区别 & 季节不同，穿衣自由度不同。 & 1.10 秒 \\
+    2 & 嵌套“知道/不知道”中谁不知道 & 他。 & 0.54 秒 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+1.5B 模型的答案比 0.5B 更稳，但第一题仍然偏概括，没有直接指出“冬天多穿、夏天少穿”的反向含义。因此，它适合快速验证部署流程，但不如 7B 模型适合复杂语义理解测试。
+
+\RealShot{Qwen2.5-1.5B-Instruct 短问答截图}{report_screenshots/05_qwen15_results.png}{展示 \ModelName{second\_short\_results.md} 中第二模型短问答结果。}
+
+\subsection{Qwen2.5-7B-Instruct}
+
+7B 模型在 GPU 实例上完成五题测试。相比 CPU 上的小模型，7B 模型不仅速度更快，答案也更接近中文语义理解任务的预期。表 \ref{tab:qwen7} 给出主要结果。
+
+\begin{longtable}{p{0.9cm}p{4.7cm}p{5.8cm}p{1.7cm}}
+  \caption{Qwen2.5-7B-Instruct 问答结果} \label{tab:qwen7}\\
+  \toprule
+  题号 & 问题摘要 & 模型回答摘要 & 耗时 \\
+  \midrule
+  \endfirsthead
+  \toprule
+  题号 & 问题摘要 & 模型回答摘要 & 耗时 \\
+  \midrule
+  \endhead
+  1 & 冬天与夏天“能穿多少穿多少”的区别 & 冬天多穿衣服保暖，夏天少穿衣服散热，核心区别是季节和穿衣目的不同 & 3.08 秒 \\
+  2 & “谁都看不上”的双重含义 & 指出原句重复同一原因，并给出更合理的表达方式 & 2.74 秒 \\
+  3 & 嵌套“知道/不知道”中谁不知道 & 认为“他”不知道前面的内容 & 2.71 秒 \\
+  4 & 明明和白白谁喜欢谁 & 白白喜欢他，即白白喜欢明明 & 0.84 秒 \\
+  5 & 多个“意思”的语义解释 & 逐项解释含义、客套、礼节、小事、有趣、意图、尴尬或抱歉等含义 & 11.59 秒 \\
+  \bottomrule
+\end{longtable}
+
+7B 模型在第一题和第五题上优势明显。第一题能够准确识别同一句式在不同季节中的反向含义，第五题能够逐条解释“意思”在不同语境中的含义。第四题中模型将“他”理解为明明，虽然句子本身存在一定歧义，但回答逻辑比小模型更清楚。
+
+\RealShot{Qwen2.5-7B-Instruct 问答测试截图}{report_screenshots/03_qwen7b_results.png}{展示 \ModelName{qwen7b\_results.md} 中 7B 模型问答结果与耗时记录。}
+
+\section{其他模型部署问题记录}
+
+除 Qwen2.5 系列外，本次还尝试了 Baichuan2-7B-Chat 和 ChatGLM3-6B。两个模型均能完成下载或部分加载，但推理阶段与当前 transformers 环境存在兼容性问题，因此未作为主对比模型。
+
+\subsection{Baichuan2-7B-Chat}
+
+Baichuan2-7B-Chat 的权重文件下载和加载过程能够完成，但调用 \ModelName{model.chat} 或 \ModelName{model.generate} 时出现缓存结构不兼容。日志中的核心错误为：
+
+\begin{quote}
+\ModelName{TypeError: 'DynamicCache' object is not subscriptable}
+\end{quote}
+
+该错误说明模型仓库中的旧版 remote code 仍按旧格式访问 \ModelName{past\_key\_values}，而当前 transformers 版本返回的是新版 \ModelName{DynamicCache} 对象。后续尝试切换静态缓存后，又出现 \ModelName{StaticCache} 访问问题和 meta tensor 复制问题。因此本次报告将 Baichuan2 记录为“加载成功、推理失败”的兼容性案例。
+
+\subsection{ChatGLM3-6B}
+
+ChatGLM3-6B 的下载过程完成，但在当前环境下连续遇到多个 API 兼容问题，包括 \ModelName{max\_length}、\ModelName{all\_tied\_weights\_keys}、\ModelName{batch\_encode\_plus}、\ModelName{num\_hidden\_layers}、\ModelName{\_extract\_past\_from\_model\_output} 等属性或方法缺失。它们都指向同一个原因：ChatGLM3 的旧版自定义模型代码与当前 transformers 4.55.4 的接口不完全一致。
+
+从部署体验角度看，这类问题说明大语言模型部署不仅取决于模型权重能否下载，也取决于模型仓库代码、transformers 版本、PyTorch 版本和推理脚本之间的匹配关系。
+
+\RealShot{Baichuan2-7B 兼容性错误日志截图}{report_screenshots/04_baichuan_error.png}{终端错误栈显示 Baichuan2-7B-Chat 在当前 Transformers 版本下推理阶段出现兼容性异常。}
+
+\section{横向对比分析}
+
+表 \ref{tab:compare} 对成功测试模型和尝试部署模型进行横向比较。
+
+\begin{longtable}{p{3.4cm}p{1.8cm}p{2.0cm}p{2.6cm}p{3.2cm}}
+  \caption{模型横向对比} \label{tab:compare}\\
+  \toprule
+  模型 & 运行环境 & 是否成功 & 速度表现 & 质量与部署体验 \\
+  \midrule
+  \endfirsthead
+  \toprule
+  模型 & 运行环境 & 是否成功 & 速度表现 & 质量与部署体验 \\
+  \midrule
+  \endhead
+  Qwen2.5-0.5B-Instruct & CPU & 成功 & 很慢，单题最长超过 10 分钟 & 下载成本低，但复杂语义理解较弱 \\
+  Qwen2.5-1.5B-Instruct & CPU/GPU & 成功 & 短题约 1 秒以内到 1 秒左右 & 比 0.5B 稳定，适合快速验证 \\
+  Qwen2.5-7B-Instruct & GPU & 成功 & 多数题数秒完成 & 语义理解最好，回答完整度最高 \\
+  Baichuan2-7B-Chat & GPU & 推理失败 & 未完成问答 & 旧 remote code 与新版缓存接口不兼容 \\
+  ChatGLM3-6B & GPU & 推理失败 & 未完成问答 & 多处 transformers API 兼容问题 \\
+  \bottomrule
+\end{longtable}
+
+从实验结果看，参数规模对中文复杂语义理解有明显影响。0.5B 模型虽然能够输出中文回答，但容易只抓住字面信息，不能稳定理解反讽、歧义和多义词。1.5B 模型在短问答中速度快，回答也更自然，但已有测试数量较少。7B 模型在 GPU 上运行速度可接受，并且能更准确地解释问题中的隐含语义，是本次实验中综合效果最好的模型。
+
+硬件环境同样影响部署体验。0.5B 模型在 CPU 上也能运行，但推理时间很长；7B 模型在 GPU 上反而能在数秒内完成多数问题。这说明对于大语言模型部署，免费 CPU 资源适合完成流程验证，GPU 资源更适合进行正式问答测试。
+
+兼容性方面，Baichuan2 和 ChatGLM3 的失败并不是模型文件缺失，而是模型自定义代码与当前依赖版本不匹配。实际部署时，应优先确认模型文档推荐的 transformers 版本，或选择当前平台已验证的模型版本。
+
+\section{公开链接与截图材料}
+
+作业要求提供项目公开可访问链接。本次实验的 ModelScope 项目链接目前待补充：
+
+\begin{quote}
+公开链接：待补充
+\end{quote}
+
+正式提交前，应将 ModelScope 项目设置为公开，并将项目链接填入此处。若无法公开整个工作区，也应至少提供包含脚本、结果文件和说明文档的 ModelScope 项目或 GitHub 仓库链接。
+
+\ShotPlaceholder{项目公开可访问链接截图}{建议替换为 ModelScope 项目 summary 页面或公开仓库页面截图。}
+
+\section{结论}
+
+本次实验完成了 ModelScope DSW 平台上的大语言模型部署与中文问答测试。Qwen2.5-0.5B、Qwen2.5-1.5B 和 Qwen2.5-7B 展示了不同参数规模下的明显差异：小模型部署成本低，但复杂中文理解能力不足；7B 模型在 GPU 上速度和质量更均衡，能够更好地处理歧义句、指代关系和多义词解释。
+
+同时，ChatGLM3-6B 与 Baichuan2-7B-Chat 的部署尝试表明，大模型部署中的关键问题不仅是算力和模型大小，还包括依赖版本和模型自定义代码的兼容性。对于课程作业场景，选择平台当前支持良好的模型，可以更稳定地完成部署、测试和横向分析。
+
+\end{document}

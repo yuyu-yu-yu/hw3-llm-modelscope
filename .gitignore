@@ -1,0 +1,18 @@
+tmp/
+作业要求与资料/
+
+# LaTeX build artifacts
+*.aux
+*.log
+*.toc
+*.out
+*.fls
+*.fdb_latexmk
+*.xdv
+*.synctex.gz
+
+# Local preview/cache files
+pdf_preview/
+
+# Older unused screenshots
+report_screenshots/modelscope_*.png
