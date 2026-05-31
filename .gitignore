@@ -13,6 +13,7 @@ tmp/
 
 # Local preview/cache files
 pdf_preview/
+release/
 
 # Older unused screenshots
 report_screenshots/modelscope_*.png
